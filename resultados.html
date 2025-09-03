@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Resultados</title>
+</head>
+<body>
+  <h1>Apuração dos Votos</h1>
+  <ul id="resultado"></ul>
+
+  <script>
+    let candidatos = {
+      "10": "Maria",
+      "20": "João",
+      "30": "Ana"
+    };
+
+    let votos = JSON.parse(localStorage.getItem("votos")) || {};
+    let ul = document.getElementById("resultado");
+
+    for (let numero in candidatos) {
+      let li = document.createElement("li");
+      li.innerText = candidatos[numero] + ": " + (votos[numero] || 0) + " votos";
+      ul.appendChild(li);
+    }
+  </script>
+</body>
+</html>

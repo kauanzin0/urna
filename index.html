@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Urna Eletrônica Escolar</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Urna Eletrônica</h1>
+
+  <div id="urna">
+    <p>Digite o número do candidato:</p>
+    <input type="text" id="voto" maxlength="2">
+    <button onclick="confirmarVoto()">Confirmar</button>
+    <button onclick="corrigirVoto()">Corrigir</button>
+  </div>
+
+  <p id="mensagem"></p>
+
+  <a href="resultados.html">Ver Resultados</a>
+
+  <script src="script.js"></script>
+</body>
+</html>
