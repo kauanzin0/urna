@@ -1,10 +1,5 @@
-let candidatos = {
-  "10": "Maria",
-  "20": "João",
-  "30": "Ana"
-};
-
-// Carregar votos do navegador
+// Carregar dados do LocalStorage
+let candidatos = JSON.parse(localStorage.getItem("candidatos")) || {};
 let votos = JSON.parse(localStorage.getItem("votos")) || {};
 
 function confirmarVoto() {

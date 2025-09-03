@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Painel Administrativo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Painel Administrativo</h1>
+    
+    <section>
+      <h2>Cadastrar Candidato</h2>
+      <input type="text" id="numero" placeholder="Número do candidato">
+      <input type="text" id="nome" placeholder="Nome do candidato">
+      <button class="btn confirmar" onclick="adicionarCandidato()">Adicionar</button>
+    </section>
+    
+    <section>
+      <h2>Lista de Candidatos</h2>
+      <ul id="lista-candidatos"></ul>
+    </section>
+    
+    <section>
+      <h2>Resultados</h2>
+      <ul id="resultado"></ul>
+    </section>
+    
+    <button class="btn corrigir" onclick="resetarSistema()">Resetar Sistema</button>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

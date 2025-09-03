@@ -1,19 +1,77 @@
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  background: #f2f2f2;
+  background: #e9ecef;
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  text-align: center;
 }
-#urna {
+
+.container {
+  max-width: 600px;
+  margin: 30px auto;
   background: white;
   padding: 20px;
-  border-radius: 10px;
-  width: 300px;
-  margin: auto;
-  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
-button {
+
+h1 {
+  color: #343a40;
+}
+
+.urna {
+  margin: 20px auto;
+  padding: 20px;
+  border: 2px solid #343a40;
+  border-radius: 10px;
+  background: #f8f9fa;
+}
+
+.input-voto {
+  font-size: 24px;
+  width: 100px;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.botoes {
+  margin-top: 15px;
+}
+
+.btn {
+  border: none;
+  padding: 12px 20px;
   margin: 5px;
-  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+.confirmar {
+  background: #28a745;
+  color: white;
+}
+
+.confirmar:hover {
+  background: #218838;
+}
+
+.corrigir {
+  background: #dc3545;
+  color: white;
+}
+
+.corrigir:hover {
+  background: #c82333;
+}
+
+a {
+  display: inline-block;
+  margin-top: 20px;
+  text-decoration: none;
+  color: #007bff;
+}
+a:hover {
+  text-decoration: underline;
 }
