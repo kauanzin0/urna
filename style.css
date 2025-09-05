@@ -1,77 +1,50 @@
 body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #4e73df, #1cc88a);
   font-family: Arial, sans-serif;
-  background: #e9ecef;
-  margin: 0;
-  padding: 0;
-  text-align: center;
 }
 
-.container {
-  max-width: 600px;
-  margin: 30px auto;
+.login-container {
   background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-h1 {
-  color: #343a40;
-}
-
-.urna {
-  margin: 20px auto;
-  padding: 20px;
-  border: 2px solid #343a40;
-  border-radius: 10px;
-  background: #f8f9fa;
-}
-
-.input-voto {
-  font-size: 24px;
-  width: 100px;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+  width: 300px;
   text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+input {
+  width: 90%;
+  padding: 10px;
   margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
 }
 
-.botoes {
-  margin-top: 15px;
-}
-
-.btn {
+button {
+  width: 100%;
+  padding: 10px;
+  background: #4e73df;
   border: none;
-  padding: 12px 20px;
-  margin: 5px;
-  font-size: 16px;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 6px;
-  transition: 0.3s;
+  font-size: 16px;
 }
 
-.confirmar {
-  background: #28a745;
-  color: white;
+button:hover {
+  background: #375acb;
 }
 
-.confirmar:hover {
-  background: #218838;
-}
-
-.corrigir {
-  background: #dc3545;
-  color: white;
-}
-
-.corrigir:hover {
-  background: #c82333;
-}
-
-a {
-  display: inline-block;
-  margin-top: 20px;
-  text-decoration: none;
-  color: #007bff;
-}
-a:hover {
-  text-decoration: underline;
+.error {
+  color: red;
+  margin-top: 10px;
 }

@@ -1,22 +1,12 @@
-// Carregar dados do LocalStorage
-let candidatos = JSON.parse(localStorage.getItem("candidatos")) || {};
-let votos = JSON.parse(localStorage.getItem("votos")) || {};
+function login() {
+  const user = document.getElementById("username").value;
+  const pass = document.getElementById("password").value;
+  const errorMsg = document.getElementById("error-message");
 
-function confirmarVoto() {
-  let numero = document.getElementById("voto").value;
-  let nome = candidatos[numero];
-
-  if (nome) {
-    votos[numero] = (votos[numero] || 0) + 1;
-    localStorage.setItem("votos", JSON.stringify(votos));
-    document.getElementById("mensagem").innerText = "Voto confirmado para " + nome;
+  if (user === "Kauan Mota" && pass === "09042008") {
+    alert("Login realizado com sucesso!");
+    window.location.href = "painel.html"; // Redireciona após login
   } else {
-    document.getElementById("mensagem").innerText = "Número inválido!";
+    errorMsg.textContent = "Usuário ou senha incorretos!";
   }
-  document.getElementById("voto").value = "";
-}
-
-function corrigirVoto() {
-  document.getElementById("voto").value = "";
-  document.getElementById("mensagem").innerText = "Digite novamente.";
 }
