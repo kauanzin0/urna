@@ -1,50 +1,81 @@
+/* Fundo da tela */
 body {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  margin: 0;
   background: linear-gradient(135deg, #4e73df, #1cc88a);
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Caixa de login */
 .login-container {
-  background: white;
-  padding: 30px;
+  background: #fff;
+  padding: 40px 30px;
   border-radius: 15px;
-  box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-  width: 300px;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
+  width: 350px;
   text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+/* Logo / título */
+.logo {
+  font-size: 26px;
+  margin-bottom: 10px;
+  color: #4e73df;
 }
 
 h2 {
   margin-bottom: 20px;
-  color: #333;
+  color: #444;
 }
 
+/* Campos de input */
 input {
   width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border: 1px solid #ccc;
+  padding: 12px;
+  margin: 12px 0;
+  border: 1px solid #ddd;
   border-radius: 8px;
+  font-size: 15px;
+  transition: 0.3s;
 }
 
+input:focus {
+  border-color: #4e73df;
+  outline: none;
+  box-shadow: 0 0 5px rgba(78,115,223,0.5);
+}
+
+/* Botão */
 button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background: #4e73df;
   border: none;
   color: white;
   border-radius: 8px;
   cursor: pointer;
   font-size: 16px;
+  margin-top: 10px;
+  transition: 0.3s;
 }
 
 button:hover {
   background: #375acb;
 }
 
+/* Mensagem de erro */
 .error {
   color: red;
-  margin-top: 10px;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+/* Animação */
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-20px);}
+  to {opacity: 1; transform: translateY(0);}
 }

@@ -8,25 +8,28 @@
   <style>
     .painel {
       background: white;
-      padding: 30px;
+      padding: 40px;
       border-radius: 15px;
-      box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.25);
       text-align: center;
       width: 400px;
       margin: auto;
+      animation: fadeIn 0.8s ease-in-out;
     }
     h2 {
       color: #1cc88a;
+      margin-bottom: 15px;
     }
     .logout {
       margin-top: 20px;
-      padding: 10px;
+      padding: 12px;
       background: #e74a3b;
       border: none;
       color: white;
       border-radius: 8px;
       cursor: pointer;
       font-size: 16px;
+      transition: 0.3s;
     }
     .logout:hover {
       background: #c0392b;
@@ -36,7 +39,7 @@
 <body>
   <div class="painel">
     <h2>Bem-vindo, Kauan Mota!</h2>
-    <p>Você está logado no sistema.</p>
+    <p>Você acessou o painel do sistema com sucesso ✅</p>
     <button class="logout" onclick="window.location.href='index.html'">Sair</button>
   </div>
 </body>
