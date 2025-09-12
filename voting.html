@@ -4,61 +4,136 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Urna Eletrônica - Votação</title>
-    <link rel="stylesheet" href="voting.css">
+    <link rel="stylesheet" href="styles/voting.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container header-content">
             <div class="logo">
-                <h1>Urna Eletrônica</h1>
-                <p>Área de Votação</p>
+                <div class="logo-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
+                <div>
+                    <h1>Urna Eletrônica</h1>
+                    <p>Área de Votação</p>
+                </div>
             </div>
             <div class="user-info">
-                <span id="userName">Eleitor</span>
-                <button id="logoutBtn" class="btn btn-outline">Sair</button>
+                <div class="user-badge">
+                    <i class="fas fa-user"></i>
+                    <span id="userName">Eleitor</span>
+                </div>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <h2>Urna Eletrônica</h2>
-        <p class="instructions">Selecione seu candidato ou digite o número na teclada</p>
+        <div class="voting-header">
+            <h2><i class="fas fa-check-circle"></i> Urna Eletrônica</h2>
+            <p class="instructions">Selecione seu candidato ou digite o número na teclada</p>
+            <div class="vote-status">
+                <div class="status-indicator active">
+                    <i class="fas fa-circle"></i> Votação em andamento
+                </div>
+            </div>
+        </div>
         
         <div class="urna-container">
             <div class="candidate-list card">
-                <h3>Candidatos</h3>
-                <div id="candidateList">
+                <div class="card-header">
+                    <h3><i class="fas fa-users"></i> Candidatos</h3>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="candidateSearch" placeholder="Buscar candidato...">
+                    </div>
+                </div>
+                <div id="candidateList" class="candidate-list-content">
                     <!-- Lista de candidatos será preenchida via JavaScript -->
                 </div>
             </div>
             
             <div class="voting-area card">
-                <div class="number-input">
-                    <div class="number-display" id="voteNumber">__</div>
+                <div class="voting-display">
+                    <div class="display-header">
+                        <span>Digite o número do candidato:</span>
+                    </div>
+                    <div class="number-input">
+                        <div class="number-display" id="voteNumber">
+                            <span class="digit">_</span>
+                            <span class="digit">_</span>
+                        </div>
+                    </div>
+                    
+                    <div id="candidateInfo" class="candidate-info">
+                        <div class="info-placeholder">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Informações do candidato aparecerão aqui</p>
+                        </div>
+                        <div id="candidateDetails" class="candidate-details"></div>
+                    </div>
                 </div>
                 
-                <div class="keypad">
-                    <button class="key" data-value="1">1</button>
-                    <button class="key" data-value="2">2</button>
-                    <button class="key" data-value="3">3</button>
-                    <button class="key" data-value="4">4</button>
-                    <button class="key" data-value="5">5</button>
-                    <button class="key" data-value="6">6</button>
-                    <button class="key" data-value="7">7</button>
-                    <button class="key" data-value="8">8</button>
-                    <button class="key" data-value="9">9</button>
-                    <button class="key" data-value="0">0</button>
-                    <button class="key" id="clearBtn">Limpar</button>
-                </div>
-                
-                <div class="action-buttons">
-                    <button id="whiteVoteBtn" class="btn btn-secondary">Voto em Branco</button>
-                    <button id="confirmVoteBtn" class="btn btn-primary">Confirmar Voto</button>
-                </div>
-                
-                <div id="candidateInfo" style="margin-top: 20px; display: none;">
-                    <h3>Informações do Candidato</h3>
-                    <div id="candidateDetails"></div>
+                <div class="keypad-section">
+                    <div class="keypad">
+                        <button class="key" data-value="1">
+                            <span class="number">1</span>
+                            <span class="letters"></span>
+                        </button>
+                        <button class="key" data-value="2">
+                            <span class="number">2</span>
+                            <span class="letters">ABC</span>
+                        </button>
+                        <button class="key" data-value="3">
+                            <span class="number">3</span>
+                            <span class="letters">DEF</span>
+                        </button>
+                        <button class="key" data-value="4">
+                            <span class="number">4</span>
+                            <span class="letters">GHI</span>
+                        </button>
+                        <button class="key" data-value="5">
+                            <span class="number">5</span>
+                            <span class="letters">JKL</span>
+                        </button>
+                        <button class="key" data-value="6">
+                            <span class="number">6</span>
+                            <span class="letters">MNO</span>
+                        </button>
+                        <button class="key" data-value="7">
+                            <span class="number">7</span>
+                            <span class="letters">PQRS</span>
+                        </button>
+                        <button class="key" data-value="8">
+                            <span class="number">8</span>
+                            <span class="letters">TUV</span>
+                        </button>
+                        <button class="key" data-value="9">
+                            <span class="number">9</span>
+                            <span class="letters">WXYZ</span>
+                        </button>
+                        <button class="key" data-value="0">
+                            <span class="number">0</span>
+                            <span class="letters"></span>
+                        </button>
+                        <button class="key control" id="clearBtn">
+                            <i class="fas fa-backspace"></i>
+                            <span>Corrige</span>
+                        </button>
+                    </div>
+                    
+                    <div class="action-buttons">
+                        <button id="whiteVoteBtn" class="btn btn-white">
+                            <i class="fas fa-square"></i> Voto em Branco
+                        </button>
+                        <button id="confirmVoteBtn" class="btn btn-confirm">
+                            <i class="fas fa-check-circle"></i> Confirmar Voto
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -68,17 +143,24 @@
     <div id="confirmationModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Confirmar Voto</h3>
+                <h3><i class="fas fa-check-circle"></i> Confirmar Voto</h3>
                 <span class="close">&times;</span>
             </div>
-            <div id="confirmationContent">
+            <div id="confirmationContent" class="modal-body">
+                <div class="confirmation-icon">
+                    <i class="fas fa-vote-yea"></i>
+                </div>
                 <p>Você está votando em:</p>
                 <h3 id="confirmCandidateName"></h3>
-                <p id="confirmCandidateParty"></p>
+                <p id="confirmCandidateParty" class="candidate-party"></p>
             </div>
-            <div class="action-buttons" style="margin-top: 20px;">
-                <button id="cancelVoteBtn" class="btn btn-secondary">Corrigir</button>
-                <button id="finalConfirmVoteBtn" class="btn btn-primary">Confirmar</button>
+            <div class="modal-footer">
+                <button id="cancelVoteBtn" class="btn btn-cancel">
+                    <i class="fas fa-edit"></i> Corrigir
+                </button>
+                <button id="finalConfirmVoteBtn" class="btn btn-confirm">
+                    <i class="fas fa-check"></i> Confirmar
+                </button>
             </div>
         </div>
     </div>
@@ -89,6 +171,6 @@
         </div>
     </footer>
 
-    <script src="voting.js"></script>
+    <script src="scripts/voting.js"></script>
 </body>
 </html>
