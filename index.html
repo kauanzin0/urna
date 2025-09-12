@@ -1,21 +1,51 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tela de Login</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica - Página Inicial</title>
+    <link rel="stylesheet" href="styles/main.css">
 </head>
 <body>
-  <div class="login-container">
-    <h1 class="logo">🔐 Sistema de Login</h1>
-    <h2>Entre na sua conta</h2>
-    <input type="text" id="username" placeholder="Usuário">
-    <input type="password" id="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-    <p id="error-message" class="error"></p>
-  </div>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Urna Eletrônica</h1>
+                <p>Sistema seguro de votação digital</p>
+            </div>
+        </div>
+    </header>
 
-  <script src="script.js"></script>
+    <div class="container main-container">
+        <div class="welcome-card card">
+            <h2>Bem-vindo ao Sistema de Votação Eletrônica</h2>
+            <p>Este sistema permite a realização de votações seguras e transparentes com total rastreabilidade dos votos.</p>
+            
+            <div class="options">
+                <a href="login.html" class="btn btn-primary">Acessar como Eleitor</a>
+                <a href="admin.html" class="btn btn-secondary">Acessar como Administrador</a>
+                <a href="register.html" class="btn btn-outline">Registrar nova conta</a>
+            </div>
+            
+            <div class="features">
+                <h3>Funcionalidades do Sistema:</h3>
+                <ul>
+                    <li>Autenticação segura de eleitores</li>
+                    <li>Interface intuitiva de votação</li>
+                    <li>Painel administrativo completo</li>
+                    <li>Visualização de resultados em tempo real</li>
+                    <li>Impedimento de votos duplicados</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Sistema de Urna Eletrônica &copy; 2023 - Desenvolvido para processos eleitorais seguros e transparentes</p>
+        </div>
+    </footer>
+
+    <script src="scripts/main.js"></script>
 </body>
 </html>

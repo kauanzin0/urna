@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica - Votação</title>
+    <link rel="stylesheet" href="styles/voting.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Urna Eletrônica</h1>
+                <p>Área de Votação</p>
+            </div>
+            <div class="user-info">
+                <span id="userName">Eleitor</span>
+                <button id="logoutBtn" class="btn btn-outline">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Urna Eletrônica</h2>
+        <p class="instructions">Selecione seu candidato ou digite o número na teclada</p>
+        
+        <div class="urna-container">
+            <div class="candidate-list card">
+                <h3>Candidatos</h3>
+                <div id="candidateList">
+                    <!-- Lista de candidatos será preenchida via JavaScript -->
+                </div>
+            </div>
+            
+            <div class="voting-area card">
+                <div class="number-input">
+                    <div class="number-display" id="voteNumber">__</div>
+                </div>
+                
+                <div class="keypad">
+                    <button class="key" data-value="1">1</button>
+                    <button class="key" data-value="2">2</button>
+                    <button class="key" data-value="3">3</button>
+                    <button class="key" data-value="4">4</button>
+                    <button class="key" data-value="5">5</button>
+                    <button class="key" data-value="6">6</button>
+                    <button class="key" data-value="7">7</button>
+                    <button class="key" data-value="8">8</button>
+                    <button class="key" data-value="9">9</button>
+                    <button class="key" data-value="0">0</button>
+                    <button class="key" id="clearBtn">Limpar</button>
+                </div>
+                
+                <div class="action-buttons">
+                    <button id="whiteVoteBtn" class="btn btn-secondary">Voto em Branco</button>
+                    <button id="confirmVoteBtn" class="btn btn-primary">Confirmar Voto</button>
+                </div>
+                
+                <div id="candidateInfo" style="margin-top: 20px; display: none;">
+                    <h3>Informações do Candidato</h3>
+                    <div id="candidateDetails"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmação de voto -->
+    <div id="confirmationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Confirmar Voto</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div id="confirmationContent">
+                <p>Você está votando em:</p>
+                <h3 id="confirmCandidateName"></h3>
+                <p id="confirmCandidateParty"></p>
+            </div>
+            <div class="action-buttons" style="margin-top: 20px;">
+                <button id="cancelVoteBtn" class="btn btn-secondary">Corrigir</button>
+                <button id="finalConfirmVoteBtn" class="btn btn-primary">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Sistema de Urna Eletrônica &copy; 2023 - Desenvolvido para processos eleitorais seguros e transparentes</p>
+        </div>
+    </footer>
+
+    <script src="scripts/voting.js"></script>
+</body>
+</html>

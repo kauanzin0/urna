@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica - Administração</title>
+    <link rel="stylesheet" href="styles/admin.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Urna Eletrônica</h1>
+                <p>Painel de Administração</p>
+            </div>
+            <div class="user-info">
+                <span id="adminName">Administrador</span>
+                <button id="adminLogoutBtn" class="btn btn-outline">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <h2>Painel de Administração</h2>
+        
+        <div class="admin-panel">
+            <div class="card">
+                <h3>Gerenciar Eleitores</h3>
+                <button id="addVoterBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">Adicionar Eleitor</button>
+                
+                <div class="search-box">
+                    <input type="text" id="voterSearch" class="form-control" placeholder="Buscar eleitor...">
+                </div>
+                
+                <div class="voter-list">
+                    <div id="voterList">
+                        <!-- Lista de eleitores será preenchida via JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h3>Controle de Votação</h3>
+                <div class="voting-controls">
+                    <div class="status-indicator">
+                        Status atual: <span id="votingStatusText">Não iniciada</span>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="startVotingBtn" class="btn btn-success">Iniciar Votação</button>
+                        <button id="pauseVotingBtn" class="btn btn-warning">Pausar Votação</button>
+                        <button id="endVotingBtn" class="btn btn-danger">Encerrar Votação</button>
+                    </div>
+                </div>
+                
+                <h3>Gerenciar Candidatos</h3>
+                <button id="addCandidateBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">Adicionar Candidato</button>
+                
+                <div class="candidate-management">
+                    <div id="candidateManagementList">
+                        <!-- Lista de candidatos para gerenciamento -->
+                    </div>
+                </div>
+                
+                <div class="chart-container">
+                    <h3>Resultados Parciais</h3>
+                    <div id="resultsChart">
+                        <!-- Gráfico de resultados será preenchido via JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar eleitor -->
+    <div id="voterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Eleitor</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="voterForm">
+                <div class="form-group">
+                    <label for="newVoterId">ID do Eleitor</label>
+                    <input type="text" id="newVoterId" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="newVoterName">Nome Completo</label>
+                    <input type="text" id="newVoterName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="newVoterPassword">Senha</label>
+                    <input type="password" id="newVoterPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para adicionar candidato -->
+    <div id="candidateModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Adicionar Candidato</h3>
+                <span class="close">&times;</span>
+            </div>
+            <form id="candidateForm">
+                <div class="form-group">
+                    <label for="candidateNumber">Número do Candidato</label>
+                    <input type="text" id="candidateNumber" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="candidateName">Nome do Candidato</label>
+                    <input type="text" id="candidateName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="candidateParty">Partido/Chapa</label>
+                    <input type="text" id="candidateParty" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="candidatePhoto">Foto do Candidato (URL)</label>
+                    <input type="text" id="candidatePhoto" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Sistema de Urna Eletrônica &copy; 2023 - Desenvolvido para processos eleitorais seguros e transparentes</p>
+        </div>
+    </footer>
+
+    <script src="scripts/admin.js"></script>
+</body>
+</html>

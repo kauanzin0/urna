@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urna Eletrônica - Login</title>
+    <link rel="stylesheet" href="styles/login.css">
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>Urna Eletrônica</h1>
+                <p>Área do Eleitor</p>
+            </div>
+            <a href="index.html" class="btn btn-outline">Voltar</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="login-container">
+            <div class="card">
+                <h2>Login para Votação</h2>
+                <p class="subtitle">Digite suas credenciais para acessar a urna eletrônica</p>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="voterId">Número de Identificação</label>
+                        <input type="text" id="voterId" class="form-control" required placeholder="Seu ID de eleitor">
+                    </div>
+                    <div class="form-group">
+                        <label for="voterPassword">Senha</label>
+                        <input type="password" id="voterPassword" class="form-control" required placeholder="Sua senha">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">Acessar Urna</button>
+                </form>
+                
+                <div class="register-link">
+                    <p>Não possui uma conta? <a href="register.html">Registre-se aqui</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <p>Sistema de Urna Eletrônica &copy; 2023 - Desenvolvido para processos eleitorais seguros e transparentes</p>
+        </div>
+    </footer>
+
+    <script src="scripts/auth.js"></script>
+</body>
+</html>
