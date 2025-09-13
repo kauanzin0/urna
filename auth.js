@@ -1,6 +1,4 @@
 // scripts/auth.js
-import { authAPI } from '../supabase.js'
-
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const voterIdInput = document.getElementById('voterId');
@@ -30,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
             try {
                 const { data, error } = await authAPI.loginAdmin(voterId, password);
                 
-                if (error) {
+                if (error || !data) {
                     alert('Credenciais de administrador inválidas!');
                     return;
                 }
@@ -64,9 +62,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Verificar status da eleição
-            const electionConfig = await adminAPI.getElectionConfig();
+            const { data: electionConfig } = await adminAPI.getElectionConfig();
             
-            if (electionConfig.data?.status !== 'ativa') {
+            if (electionConfig?.status !== 'ativa') {
                 alert('A votação não está aberta no momento!');
                 return;
             }

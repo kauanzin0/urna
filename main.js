@@ -1,4 +1,4 @@
-// Script principal para a página inicial
+// scripts/main.js
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Sistema de Urna Eletrônica carregado');
     

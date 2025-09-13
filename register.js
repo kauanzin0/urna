@@ -1,6 +1,4 @@
 // scripts/register.js
-import { authAPI } from '../supabase.js'
-
 document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('registerForm');
     const registerLinkInput = document.getElementById('registerLink');
@@ -45,6 +43,12 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (linkError || !linkData) {
                 alert('Link de registro inválido ou expirado!');
+                return;
+            }
+            
+            // Verificar se o link ainda pode ser usado
+            if (linkData.usos_atuais >= linkData.max_usos) {
+                alert('Este link de registro atingiu o limite máximo de usos!');
                 return;
             }
             

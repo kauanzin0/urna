@@ -1,16 +1,16 @@
 // lib/supabase.js
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+const supabaseUrl = 'https://cmotgxmepisuobieybzz.supabase.co' // Substitua pela sua URL
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtb3RneG1lcGlzdW9iaWV5Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3MzM4NDcsImV4cCI6MjA3MzMwOTg0N30.wYlO8N5flb_agcMipu_PVh4U4Qn2XNn_g2L0mT6FX4k' // Substitua pela sua chave
 
+// Inicializar o cliente Supabase
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// Funções auxiliares para operações comuns
+// Funções de autenticação
 export const authAPI = {
   // Login de administrador
   loginAdmin: async (email, password) => {
-    // Em um sistema real, isso seria feito via RPC ou tabela de administradores
     const { data, error } = await supabase
       .from('administradores')
       .select('*')
@@ -59,6 +59,7 @@ export const authAPI = {
   }
 }
 
+// Funções de votação
 export const votingAPI = {
   // Obter todos os candidatos
   getCandidates: async () => {
@@ -85,7 +86,7 @@ export const votingAPI = {
     const { data, error } = await supabase
       .from('eleitores')
       .update({ ja_votou: hasVoted })
-      .eq('numero_identificacao', voterId)
+      .eq('id', voterId)
     
     return { data, error }
   },
@@ -101,16 +102,21 @@ export const votingAPI = {
   }
 }
 
+// Funções administrativas
 export const adminAPI = {
   // Obter estatísticas da eleição
   getElectionStats: async () => {
-    const { data: votersData } = await supabase
+    const { data: votersData, error: votersError } = await supabase
       .from('eleitores')
       .select('id, ja_votou')
     
-    const { data: candidatesData } = await supabase
+    const { data: candidatesData, error: candidatesError } = await supabase
       .from('candidatos')
       .select('id, votos')
+    
+    if (votersError || candidatesError) {
+      return { error: 'Erro ao carregar estatísticas' }
+    }
     
     const totalVoters = votersData?.length || 0
     const votedVoters = votersData?.filter(v => v.ja_votou)?.length || 0
@@ -124,7 +130,7 @@ export const adminAPI = {
     }
   },
 
-  // Obter todos os eleitors
+  // Obter todos os eleitores
   getVoters: async (searchTerm = '') => {
     let query = supabase
       .from('eleitores')
@@ -187,6 +193,16 @@ export const adminAPI = {
       .from('links_registro')
       .insert([linkData])
       .select()
+    
+    return { data, error }
+  },
+
+  // Obter resultados da eleição
+  getElectionResults: async () => {
+    const { data, error } = await supabase
+      .from('candidatos')
+      .select('*')
+      .order('votos', { ascending: false })
     
     return { data, error }
   }
