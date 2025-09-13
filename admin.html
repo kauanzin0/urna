@@ -5,66 +5,147 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Urna Eletrônica - Administração</title>
     <link rel="stylesheet" href="admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <header>
         <div class="container header-content">
             <div class="logo">
-                <h1>Urna Eletrônica</h1>
-                <p>Painel de Administração</p>
+                <div class="logo-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <div>
+                    <h1>Urna Eletrônica</h1>
+                    <p>Painel de Administração</p>
+                </div>
             </div>
             <div class="user-info">
-                <span id="adminName">Administrador</span>
-                <button id="adminLogoutBtn" class="btn btn-outline">Sair</button>
+                <div class="user-badge">
+                    <i class="fas fa-user-cog"></i>
+                    <span id="adminName">Administrador</span>
+                </div>
+                <button id="adminLogoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i> Sair
+                </button>
             </div>
         </div>
     </header>
 
     <div class="container">
-        <h2>Painel de Administração</h2>
+        <div class="admin-header">
+            <h2><i class="fas fa-cogs"></i> Painel de Controle</h2>
+            <p class="subtitle">Gerencie eleitores, candidatos e o processo eleitoral</p>
+        </div>
         
-        <div class="admin-panel">
-            <div class="card">
-                <h3>Gerenciar Eleitores</h3>
-                <button id="addVoterBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">Adicionar Eleitor</button>
-                
-                <div class="search-box">
-                    <input type="text" id="voterSearch" class="form-control" placeholder="Buscar eleitor...">
+        <div class="admin-dashboard">
+            <div class="stats-cards">
+                <div class="stat-card">
+                    <div class="stat-icon voters">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalVoters">0</h3>
+                        <p>Eleitores Cadastrados</p>
+                    </div>
                 </div>
-                
-                <div class="voter-list">
-                    <div id="voterList">
-                        <!-- Lista de eleitores será preenchida via JavaScript -->
+                <div class="stat-card">
+                    <div class="stat-icon candidates">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalCandidates">0</h3>
+                        <p>Candidatos</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon votes">
+                        <i class="fas fa-vote-yea"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalVotes">0</h3>
+                        <p>Votos Computados</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon status">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="participationRate">0%</h3>
+                        <p>Participação</p>
                     </div>
                 </div>
             </div>
             
-            <div class="card">
-                <h3>Controle de Votação</h3>
-                <div class="voting-controls">
-                    <div class="status-indicator">
-                        Status atual: <span id="votingStatusText">Não iniciada</span>
+            <div class="admin-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-users"></i> Gerenciar Eleitores</h3>
+                        <div class="card-actions">
+                            <button id="generateLinkBtn" class="btn btn-primary">
+                                <i class="fas fa-link"></i> Gerar Link
+                            </button>
+                            <button id="addVoterBtn" class="btn btn-success">
+                                <i class="fas fa-user-plus"></i> Adicionar
+                            </button>
+                        </div>
                     </div>
-                    <div class="action-buttons">
-                        <button id="startVotingBtn" class="btn btn-success">Iniciar Votação</button>
-                        <button id="pauseVotingBtn" class="btn btn-warning">Pausar Votação</button>
-                        <button id="endVotingBtn" class="btn btn-danger">Encerrar Votação</button>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="voterSearch" class="form-control" placeholder="Buscar eleitor...">
+                    </div>
+                    
+                    <div class="voter-list">
+                        <div id="voterList">
+                            <!-- Lista de eleitores será preenchida via JavaScript -->
+                        </div>
                     </div>
                 </div>
                 
-                <h3>Gerenciar Candidatos</h3>
-                <button id="addCandidateBtn" class="btn btn-primary" style="width: 100%; margin-bottom: 15px;">Adicionar Candidato</button>
-                
-                <div class="candidate-management">
-                    <div id="candidateManagementList">
-                        <!-- Lista de candidatos para gerenciamento -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-user-tie"></i> Gerenciar Candidatos</h3>
+                        <button id="addCandidateBtn" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Adicionar
+                        </button>
                     </div>
-                </div>
-                
-                <div class="chart-container">
-                    <h3>Resultados Parciais</h3>
-                    <div id="resultsChart">
-                        <!-- Gráfico de resultados será preenchido via JavaScript -->
+                    
+                    <div class="candidate-management">
+                        <div id="candidateManagementList">
+                            <!-- Lista de candidatos para gerenciamento -->
+                        </div>
+                    </div>
+                    
+                    <div class="card-header">
+                        <h3><i class="fas fa-sliders-h"></i> Controle de Votação</h3>
+                    </div>
+                    
+                    <div class="voting-controls">
+                        <div class="status-indicator">
+                            Status atual: <span id="votingStatusText">Não iniciada</span>
+                        </div>
+                        <div class="action-buttons">
+                            <button id="startVotingBtn" class="btn btn-success">
+                                <i class="fas fa-play"></i> Iniciar Votação
+                            </button>
+                            <button id="pauseVotingBtn" class="btn btn-warning">
+                                <i class="fas fa-pause"></i> Pausar Votação
+                            </button>
+                            <button id="endVotingBtn" class="btn btn-danger">
+                                <i class="fas fa-stop"></i> Encerrar Votação
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie"></i> Resultados Parciais</h3>
+                        </div>
+                        <div id="resultsChart">
+                            <!-- Gráfico de resultados será preenchido via JavaScript -->
+                        </div>
                     </div>
                 </div>
             </div>
@@ -75,7 +156,7 @@
     <div id="voterModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Adicionar Eleitor</h3>
+                <h3><i class="fas fa-user-plus"></i> Adicionar Eleitor</h3>
                 <span class="close">&times;</span>
             </div>
             <form id="voterForm">
@@ -91,7 +172,10 @@
                     <label for="newVoterPassword">Senha</label>
                     <input type="password" id="newVoterPassword" class="form-control" required>
                 </div>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
             </form>
         </div>
     </div>
@@ -100,7 +184,7 @@
     <div id="candidateModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Adicionar Candidato</h3>
+                <h3><i class="fas fa-user-plus"></i> Adicionar Candidato</h3>
                 <span class="close">&times;</span>
             </div>
             <form id="candidateForm">
@@ -120,8 +204,45 @@
                     <label for="candidatePhoto">Foto do Candidato (URL)</label>
                     <input type="text" id="candidatePhoto" class="form-control">
                 </div>
-                <button type="submit" class="btn btn-primary">Salvar</button>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-cancel close-modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Modal para gerar link -->
+    <div id="linkModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-link"></i> Gerar Link de Acesso</h3>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Use este link para permitir que novos eleitors se registrem no sistema:</p>
+                
+                <div class="link-container">
+                    <input type="text" id="generatedLink" class="form-control" readonly value="https://urna.escolahelena.com/register?token=abc123">
+                    <button id="copyLinkBtn" class="btn btn-primary">
+                        <i class="fas fa-copy"></i> Copiar
+                    </button>
+                </div>
+                
+                <div class="link-info">
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span>Este link expira em: <strong>30 dias</strong></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-user-limit"></i>
+                        <span>Número máximo de usuários: <strong>Ilimitado</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-cancel close-modal">Fechar</button>
+            </div>
         </div>
     </div>
 

@@ -1,4 +1,4 @@
-// Script para a página de administração (admin.html)
+// Script para a página de administração (admin.html) - Versão melhorada
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar se o administrador está logado
     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin'));
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const adminNameElement = document.getElementById('adminName');
     const adminLogoutBtn = document.getElementById('adminLogoutBtn');
     const addVoterBtn = document.getElementById('addVoterBtn');
+    const generateLinkBtn = document.getElementById('generateLinkBtn');
     const voterList = document.getElementById('voterList');
     const voterSearch = document.getElementById('voterSearch');
     const startVotingBtn = document.getElementById('startVotingBtn');
@@ -22,9 +23,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultsChart = document.getElementById('resultsChart');
     const voterModal = document.getElementById('voterModal');
     const candidateModal = document.getElementById('candidateModal');
+    const linkModal = document.getElementById('linkModal');
     const voterForm = document.getElementById('voterForm');
     const candidateForm = document.getElementById('candidateForm');
-    const closeButtons = document.querySelectorAll('.close');
+    const generatedLink = document.getElementById('generatedLink');
+    const copyLinkBtn = document.getElementById('copyLinkBtn');
+    const closeButtons = document.querySelectorAll('.close, .close-modal');
+    
+    // Elementos de estatísticas
+    const totalVotersElement = document.getElementById('totalVoters');
+    const totalCandidatesElement = document.getElementById('totalCandidates');
+    const totalVotesElement = document.getElementById('totalVotes');
+    const participationRateElement = document.getElementById('participationRate');
     
     // Variáveis de estado
     let voters = JSON.parse(localStorage.getItem('voters')) || [];
@@ -34,6 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar interface
     adminNameElement.textContent = currentAdmin.name || 'Administrador';
     updateVotingControls();
+    updateStats();
     renderVoterList();
     renderCandidateManagementList();
     renderResultsChart();
@@ -41,6 +52,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listeners
     adminLogoutBtn.addEventListener('click', handleLogout);
     addVoterBtn.addEventListener('click', () => voterModal.style.display = 'flex');
+    generateLinkBtn.addEventListener('click', () => linkModal.style.display = 'flex');
     addCandidateBtn.addEventListener('click', () => candidateModal.style.display = 'flex');
     
     voterSearch.addEventListener('input', renderVoterList);
@@ -51,11 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     voterForm.addEventListener('submit', handleAddVoter);
     candidateForm.addEventListener('submit', handleAddCandidate);
+    copyLinkBtn.addEventListener('click', copyLinkToClipboard);
     
     closeButtons.forEach(btn => {
         btn.addEventListener('click', () => {
             voterModal.style.display = 'none';
             candidateModal.style.display = 'none';
+            linkModal.style.display = 'none';
         });
     });
     
@@ -63,9 +77,25 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('click', (e) => {
         if (e.target === voterModal) voterModal.style.display = 'none';
         if (e.target === candidateModal) candidateModal.style.display = 'none';
+        if (e.target === linkModal) linkModal.style.display = 'none';
     });
     
     // Funções
+    function updateStats() {
+        // Atualizar estatísticas
+        totalVotersElement.textContent = voters.length;
+        totalCandidatesElement.textContent = candidates.length;
+        
+        // Calcular votos totais
+        const totalVotes = candidates.reduce((sum, candidate) => sum + (candidate.votes || 0), 0);
+        totalVotesElement.textContent = totalVotes;
+        
+        // Calcular taxa de participação
+        const votedVoters = voters.filter(voter => voter.hasVoted).length;
+        const participationRate = voters.length > 0 ? Math.round((votedVoters / voters.length) * 100) : 0;
+        participationRateElement.textContent = `${participationRate}%`;
+    }
+    
     function renderVoterList() {
         voterList.innerHTML = '';
         
@@ -76,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
         
         if (filteredVoters.length === 0) {
-            voterList.innerHTML = '<p>Nenhum eleitor encontrado.</p>';
+            voterList.innerHTML = '<div class="no-results"><i class="fas fa-search"></i><p>Nenhum eleitor encontrado</p></div>';
             return;
         }
         
@@ -101,7 +131,7 @@ document.addEventListener('DOMContentLoaded', function() {
         candidateManagementList.innerHTML = '';
         
         if (candidates.length === 0) {
-            candidateManagementList.innerHTML = '<p>Nenhum candidato cadastrado.</p>';
+            candidateManagementList.innerHTML = '<div class="no-results"><i class="fas fa-user-tie"></i><p>Nenhum candidato cadastrado</p></div>';
             return;
         }
         
@@ -124,7 +154,7 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsChart.innerHTML = '';
         
         if (candidates.length === 0) {
-            resultsChart.innerHTML = '<p>Nenhum candidato para mostrar resultados.</p>';
+            resultsChart.innerHTML = '<div class="no-results"><i class="fas fa-chart-pie"></i><p>Nenhum candidato para mostrar resultados</p></div>';
             return;
         }
         
@@ -156,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
             whiteBar.className = 'chart-bar';
             whiteBar.innerHTML = `
                 <div class="chart-bar-label">Votos em branco: ${whiteVotes} votos (${whitePercentage.toFixed(1)}%)</div>
-                <div class="chart-bar-fill" style="width: ${whitePercentage}%; background-color: #6b7280;"></div>
+                <div class="chart-bar-fill" style="width: ${whitePercentage}%; background: linear-gradient(90deg, #6b7280 0%, #4b5563 100%);"></div>
             `;
             
             resultsChart.appendChild(whiteBar);
@@ -185,11 +215,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         localStorage.setItem('voters', JSON.stringify(voters));
         renderVoterList();
+        updateStats();
         
         voterForm.reset();
         voterModal.style.display = 'none';
         
-        alert('Eleitor adicionado com sucesso!');
+        showSuccessMessage('Eleitor adicionado com sucesso!');
     }
     
     function handleAddCandidate(e) {
@@ -217,18 +248,41 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('candidates', JSON.stringify(candidates));
         renderCandidateManagementList();
         renderResultsChart();
+        updateStats();
         
         candidateForm.reset();
         candidateModal.style.display = 'none';
         
-        alert('Candidato adicionado com sucesso!');
+        showSuccessMessage('Candidato adicionado com sucesso!');
+    }
+    
+    function copyLinkToClipboard() {
+        generatedLink.select();
+        document.execCommand('copy');
+        
+        // Feedback visual
+        copyLinkBtn.innerHTML = '<i class="fas fa-check"></i> Copiado!';
+        copyLinkBtn.style.backgroundColor = '#10b981';
+        
+        setTimeout(() => {
+            copyLinkBtn.innerHTML = '<i class="fas fa-copy"></i> Copiar';
+            copyLinkBtn.style.backgroundColor = '';
+        }, 2000);
     }
     
     function changeVotingStatus(status) {
         votingStatus = status;
         localStorage.setItem('votingStatus', JSON.stringify(votingStatus));
         updateVotingControls();
-        alert(`Status da votação alterado para: ${getStatusText(status)}`);
+        
+        let statusMessage = '';
+        switch(status) {
+            case 'active': statusMessage = 'Votação iniciada com sucesso!'; break;
+            case 'paused': statusMessage = 'Votação pausada.'; break;
+            case 'stopped': statusMessage = 'Votação encerrada.'; break;
+        }
+        
+        showSuccessMessage(statusMessage);
     }
     
     function updateVotingControls() {
@@ -237,20 +291,88 @@ document.addEventListener('DOMContentLoaded', function() {
         endVotingBtn.disabled = votingStatus === 'stopped';
         
         // Atualizar texto do status
-        votingStatusText.textContent = getStatusText(votingStatus);
+        let statusText = '';
+        switch(votingStatus) {
+            case 'active': statusText = 'Votação em andamento'; break;
+            case 'paused': statusText = 'Votação pausada'; break;
+            case 'stopped': statusText = 'Votação encerrada'; break;
+        }
+        votingStatusText.textContent = statusText;
     }
     
-    function getStatusText(status) {
-        switch(status) {
-            case 'active': return 'Votação em andamento';
-            case 'paused': return 'Votação pausada';
-            case 'stopped': return 'Votação encerrada';
-            default: return 'Status desconhecido';
-        }
+    function showSuccessMessage(message) {
+        // Criar elemento de mensagem de sucesso
+        const successMessage = document.createElement('div');
+        successMessage.className = 'success-message';
+        successMessage.innerHTML = `
+            <div class="success-content">
+                <i class="fas fa-check-circle"></i>
+                <p>${message}</p>
+            </div>
+        `;
+        
+        document.body.appendChild(successMessage);
+        
+        // Animação de entrada
+        setTimeout(() => {
+            successMessage.classList.add('show');
+        }, 10);
+        
+        // Remover após 3 segundos
+        setTimeout(() => {
+            successMessage.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(successMessage);
+            }, 300);
+        }, 3000);
     }
     
     function handleLogout() {
         localStorage.removeItem('currentAdmin');
         window.location.href = 'login.html';
     }
+    
+    // Adicionar estilos para a mensagem de sucesso
+    const successStyles = document.createElement('style');
+    successStyles.textContent = `
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--success-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1100;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .success-message.show {
+            transform: translateX(0);
+        }
+        
+        .success-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .success-content i {
+            font-size: 20px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 30px;
+            color: var(--gray-500);
+        }
+        
+        .no-results i {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+    `;
+    document.head.appendChild(successStyles);
 });
