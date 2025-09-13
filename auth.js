@@ -1,4 +1,6 @@
-// Script de autenticação para login.html
+// scripts/auth.js
+import { authAPI } from '../supabase.js'
+
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const voterIdInput = document.getElementById('voterId');
@@ -17,45 +19,64 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Manipular o envio do formulário de login
-    loginForm.addEventListener('submit', function(e) {
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const voterId = voterIdInput.value;
         const password = voterPasswordInput.value;
         
         // Verificar credenciais de administrador
-        if (voterId === 'escolahelena.adm@gmail.com' && password === 'adm123') {
-            // Login de administrador bem-sucedido
-            localStorage.setItem('currentAdmin', JSON.stringify({
-                email: voterId,
-                name: 'Administrador'
-            }));
-            window.location.href = 'admin.html';
-            return;
+        if (voterId === 'escolahelena.adm@gmail.com') {
+            try {
+                const { data, error } = await authAPI.loginAdmin(voterId, password);
+                
+                if (error) {
+                    alert('Credenciais de administrador inválidas!');
+                    return;
+                }
+                
+                // Login de administrador bem-sucedido
+                localStorage.setItem('currentAdmin', JSON.stringify({
+                    id: data.id,
+                    email: data.email,
+                    name: data.nome
+                }));
+                window.location.href = 'admin.html';
+                return;
+            } catch (error) {
+                alert('Erro ao fazer login como administrador');
+                return;
+            }
         }
         
         // Verificar credenciais de eleitor
-        const voters = JSON.parse(localStorage.getItem('voters')) || [];
-        const voter = voters.find(v => v.id === voterId && v.password === password);
-        
-        if (!voter) {
-            alert('ID ou senha incorretos!');
-            return;
+        try {
+            const { data, error } = await authAPI.loginVoter(voterId, password);
+            
+            if (error || !data) {
+                alert('ID ou senha incorretos!');
+                return;
+            }
+            
+            if (data.ja_votou) {
+                alert('Este eleitor já votou!');
+                return;
+            }
+            
+            // Verificar status da eleição
+            const electionConfig = await adminAPI.getElectionConfig();
+            
+            if (electionConfig.data?.status !== 'ativa') {
+                alert('A votação não está aberta no momento!');
+                return;
+            }
+            
+            // Login bem-sucedido
+            localStorage.setItem('currentUser', JSON.stringify(data));
+            window.location.href = 'voting.html';
+        } catch (error) {
+            alert('Erro ao fazer login');
+            console.error(error);
         }
-        
-        if (voter.hasVoted) {
-            alert('Este eleitor já votou!');
-            return;
-        }
-        
-        const votingStatus = JSON.parse(localStorage.getItem('votingStatus')) || 'stopped';
-        if (votingStatus !== 'active') {
-            alert('A votação não está aberta no momento!');
-            return;
-        }
-        
-        // Login bem-sucedido
-        localStorage.setItem('currentUser', JSON.stringify(voter));
-        window.location.href = 'voting.html';
     });
 });

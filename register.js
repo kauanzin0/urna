@@ -1,4 +1,6 @@
-// Script para a página de registro (register.html)
+// scripts/register.js
+import { authAPI } from '../supabase.js'
+
 document.addEventListener('DOMContentLoaded', function() {
     const registerForm = document.getElementById('registerForm');
     const registerLinkInput = document.getElementById('registerLink');
@@ -7,23 +9,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerPasswordInput = document.getElementById('registerPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
     
-    // Verificar se já está logado
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin'));
+    // Verificar se há código de registro na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
     
-    if (currentUser) {
-        window.location.href = 'voting.html';
-        return;
-    } else if (currentAdmin) {
-        window.location.href = 'admin.html';
-        return;
+    if (code) {
+        registerLinkInput.value = code;
     }
     
-    // Definir link de registro válido (em um sistema real, isso viria do backend)
-    const validRegisterLink = "https://urna.escolahelena.com/register?token=abc123";
-    
     // Manipular o envio do formulário de registro
-    registerForm.addEventListener('submit', function(e) {
+    registerForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
         const registerLink = registerLinkInput.value;
@@ -31,12 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const registerName = registerNameInput.value;
         const registerPassword = registerPasswordInput.value;
         const confirmPassword = confirmPasswordInput.value;
-        
-        // Validar link de registro
-        if (registerLink !== validRegisterLink) {
-            alert('Link de registro inválido! Por favor, use o link fornecido pela administração.');
-            return;
-        }
         
         // Validar se as senhas coincidem
         if (registerPassword !== confirmPassword) {
@@ -50,24 +39,55 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
         
-        // Verificar se o ID já existe
-        const voters = JSON.parse(localStorage.getItem('voters')) || [];
-        if (voters.some(v => v.id === registerId)) {
-            alert('Já existe um eleitor com este ID!');
-            return;
+        try {
+            // Validar link de registro
+            const { data: linkData, error: linkError } = await authAPI.validateRegistrationLink(registerLink);
+            
+            if (linkError || !linkData) {
+                alert('Link de registro inválido ou expirado!');
+                return;
+            }
+            
+            // Verificar se o ID já existe
+            const { data: existingVoter } = await supabase
+                .from('eleitores')
+                .select('id')
+                .eq('numero_identificacao', registerId)
+                .single();
+            
+            if (existingVoter) {
+                alert('Já existe um eleitor com este ID!');
+                return;
+            }
+            
+            // Adicionar novo eleitor
+            const voterData = {
+                numero_identificacao: registerId,
+                nome: registerName,
+                senha: registerPassword,
+                ja_votou: false,
+                link_registro_id: linkData.id,
+                ativo: true
+            };
+            
+            const { data, error } = await authAPI.registerVoter(voterData);
+            
+            if (error) {
+                alert('Erro ao registrar: ' + error.message);
+                return;
+            }
+            
+            // Atualizar contador de usos do link
+            await supabase
+                .from('links_registro')
+                .update({ usos_atuais: linkData.usos_atuais + 1 })
+                .eq('id', linkData.id);
+            
+            alert('Registro realizado com sucesso! Agora você pode fazer login.');
+            window.location.href = 'login.html';
+        } catch (error) {
+            alert('Erro ao processar registro');
+            console.error(error);
         }
-        
-        // Adicionar novo eleitor
-        voters.push({
-            id: registerId,
-            name: registerName,
-            password: registerPassword,
-            hasVoted: false
-        });
-        
-        localStorage.setItem('voters', JSON.stringify(voters));
-        
-        alert('Registro realizado com sucesso! Agora você pode fazer login.');
-        window.location.href = 'login.html';
     });
 });
