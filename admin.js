@@ -509,3 +509,123 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar dados iniciais
     loadInitialData();
 });
+
+// scripts/admin.js - Funções corrigidas para adicionar eleitores e candidatos
+
+// ... código anterior ...
+
+async function handleAddVoter(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('newVoterId').value;
+    const name = document.getElementById('newVoterName').value;
+    const password = document.getElementById('newVoterPassword').value;
+    
+    try {
+        const voterData = {
+            numero_identificacao: id,
+            nome: name,
+            senha: password,
+            ja_votou: false,
+            ativo: true
+        };
+        
+        const { data, error } = await adminAPI.addVoter(voterData);
+        
+        if (error) {
+            alert('Erro ao adicionar eleitor: ' + error.message);
+            console.error('Detalhes do erro:', error);
+            return;
+        }
+        
+        await updateStats();
+        await renderVoterList();
+        
+        voterForm.reset();
+        voterModal.style.display = 'none';
+        
+        showSuccessMessage('Eleitor adicionado com sucesso!');
+    } catch (error) {
+        alert('Erro ao adicionar eleitor: ' + error.message);
+        console.error('Erro completo:', error);
+    }
+}
+
+async function handleAddCandidate(e) {
+    e.preventDefault();
+    
+    const number = document.getElementById('candidateNumber').value;
+    const name = document.getElementById('candidateName').value;
+    const party = document.getElementById('candidateParty').value;
+    const photo = document.getElementById('candidatePhoto').value;
+    
+    // Validação básica
+    if (!number || !name || !party) {
+        alert('Por favor, preencha todos os campos obrigatórios!');
+        return;
+    }
+    
+    try {
+        const candidateData = {
+            numero: number,
+            nome: name,
+            partido: party,
+            foto_url: photo || null,
+            votos: 0
+        };
+        
+        const { data, error } = await adminAPI.addCandidate(candidateData);
+        
+        if (error) {
+            alert('Erro ao adicionar candidato: ' + error.message);
+            console.error('Detalhes do erro:', error);
+            return;
+        }
+        
+        await renderCandidateManagementList();
+        await renderResultsChart();
+        await updateStats();
+        
+        candidateForm.reset();
+        candidateModal.style.display = 'none';
+        
+        showSuccessMessage('Candidato adicionado com sucesso!');
+    } catch (error) {
+        alert('Erro ao adicionar candidato: ' + error.message);
+        console.error('Erro completo:', error);
+    }
+}
+
+async function generateRegistrationLink() {
+    try {
+        // Gerar código único
+        const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+        
+        const linkData = {
+            codigo: code,
+            criado_por: currentAdmin.id,
+            data_expiracao: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            max_usos: 100,
+            usos_atuais: 0,
+            ativo: true
+        };
+        
+        const { data, error } = await adminAPI.generateRegistrationLink(linkData);
+        
+        if (error) {
+            alert('Erro ao gerar link: ' + error.message);
+            console.error('Detalhes do erro:', error);
+            return;
+        }
+        
+        // Atualizar o link no modal
+        generatedLink.value = `${window.location.origin}/register.html?code=${code}`;
+        
+        linkModal.style.display = 'flex';
+    } catch (error) {
+        alert('Erro ao gerar link de registro: ' + error.message);
+        console.error('Erro completo:', error);
+    }
+}
+
+// ... resto do código ...
