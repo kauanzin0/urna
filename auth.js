@@ -1,4 +1,4 @@
-// scripts/auth.js
+// scripts/auth.js (versão sem módulos ES6)
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
     const voterIdInput = document.getElementById('voterId');
@@ -16,6 +16,56 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
+    // Função para login de administrador via API
+    async function loginAdmin(email, password) {
+        try {
+            const { data, error } = await supabase
+                .from('administradores')
+                .select('*')
+                .eq('email', email)
+                .eq('senha', password)
+                .eq('ativo', true)
+                .single();
+            
+            return { data, error };
+        } catch (error) {
+            return { error };
+        }
+    }
+    
+    // Função para login de eleitor via API
+    async function loginVoter(voterId, password) {
+        try {
+            const { data, error } = await supabase
+                .from('eleitores')
+                .select('*')
+                .eq('numero_identificacao', voterId)
+                .eq('senha', password)
+                .eq('ativo', true)
+                .single();
+            
+            return { data, error };
+        } catch (error) {
+            return { error };
+        }
+    }
+    
+    // Função para obter configuração da eleição
+    async function getElectionConfig() {
+        try {
+            const { data, error } = await supabase
+                .from('configuracoes_eleicao')
+                .select('*')
+                .order('data_criacao', { ascending: false })
+                .limit(1)
+                .single();
+            
+            return { data, error };
+        } catch (error) {
+            return { error };
+        }
+    }
+    
     // Manipular o envio do formulário de login
     loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
@@ -30,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 id: 'admin-inicial',
                 email: 'admin@escolahelena.com',
                 name: 'Admin Inicial',
-                acesso_inicial: true // Flag para identificar que é o acesso inicial
+                acesso_inicial: true
             }));
             window.location.href = 'admin.html';
             return;
@@ -39,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Verificar credenciais de administrador - Email principal
         if (voterId === 'escolahelena.adm@gmail.com' || voterId === 'admin@escolahelena.com') {
             try {
-                const { data, error } = await authAPI.loginAdmin(voterId, password);
+                const { data, error } = await loginAdmin(voterId, password);
                 
                 if (error || !data) {
                     alert('Credenciais de administrador inválidas!');
@@ -62,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Verificar credenciais de eleitor
         try {
-            const { data, error } = await authAPI.loginVoter(voterId, password);
+            const { data, error } = await loginVoter(voterId, password);
             
             if (error || !data) {
                 alert('ID ou senha incorretos!');
@@ -75,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // Verificar status da eleição
-            const { data: electionConfig, error: electionError } = await adminAPI.getElectionConfig();
+            const { data: electionConfig, error: electionError } = await getElectionConfig();
             
             if (electionError) {
                 alert('Erro ao verificar status da eleição');
