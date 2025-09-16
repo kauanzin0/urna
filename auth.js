@@ -163,3 +163,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Adicione esta verificação no scripts/auth.js
+if ((voterId === '123456' && password === '1234567') || 
+    (voterId === 'admin@escolahelena.com' && password === '1234567')) {
+    
+    localStorage.setItem('currentAdmin', JSON.stringify({
+        id: 'admin-inicial',
+        email: 'admin@escolahelena.com',
+        name: 'Admin Inicial'
+    }));
+    window.location.href = 'admin.html';
+    return;
+}
