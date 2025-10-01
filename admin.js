@@ -1,4 +1,4 @@
-/// scripts/admin.js
+// scripts/admin.js - Versão sem módulos ES6
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar se o administrador está logado
     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin'));
@@ -44,6 +44,179 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar interface
     adminNameElement.textContent = currentAdmin.name || 'Administrador';
     
+    // Funções do Supabase (copiadas do supabase.js)
+    const adminAPI = {
+        // Adicionar novo candidato
+        addCandidate: async (candidateData) => {
+            console.log('Enviando dados do candidato para Supabase:', candidateData);
+            
+            const { data, error } = await supabase
+                .from('candidatos')
+                .insert([candidateData])
+                .select()
+            
+            console.log('Resposta do Supabase (candidato):', { data, error });
+            
+            if (error) {
+                console.error('Erro específico do Supabase (candidato):', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
+            }
+            
+            return { data, error }
+        },
+
+        // Gerar novo link de registro
+        generateRegistrationLink: async (linkData) => {
+            console.log('Enviando dados do link para Supabase:', linkData);
+            
+            const { data, error } = await supabase
+                .from('links_registro')
+                .insert([linkData])
+                .select()
+            
+            console.log('Resposta do Supabase (link):', { data, error });
+            
+            if (error) {
+                console.error('Erro específico do Supabase (link):', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
+            }
+            
+            return { data, error }
+        },
+
+        // Adicionar novo eleitor
+        addVoter: async (voterData) => {
+            console.log('Enviando dados do eleitor para Supabase:', voterData);
+            
+            const { data, error } = await supabase
+                .from('eleitores')
+                .insert([voterData])
+                .select()
+            
+            console.log('Resposta do Supabase (eleitor):', { data, error });
+            
+            if (error) {
+                console.error('Erro específico do Supabase (eleitor):', {
+                    message: error.message,
+                    details: error.details,
+                    hint: error.hint,
+                    code: error.code
+                });
+            }
+            
+            return { data, error }
+        },
+
+        // Obter todos os eleitores
+        getVoters: async (searchTerm = '') => {
+            let query = supabase
+                .from('eleitores')
+                .select('*')
+                .order('nome')
+            
+            if (searchTerm) {
+                query = query.or(`nome.ilike.%${searchTerm}%,numero_identificacao.ilike.%${searchTerm}%`)
+            }
+            
+            const { data, error } = await query
+            return { data, error }
+        },
+
+        // Obter configuração da eleição
+        getElectionConfig: async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('configuracoes_eleicao')
+                    .select('*')
+                    .order('data_criacao', { ascending: false })
+                    .limit(1)
+                    .single()
+                
+                return { data, error }
+            } catch (error) {
+                console.error('Erro ao obter configuração:', error)
+                return { error }
+            }
+        },
+
+        // Obter estatísticas da eleição
+        getElectionStats: async () => {
+            const { data: votersData, error: votersError } = await supabase
+                .from('eleitores')
+                .select('id, ja_votou')
+            
+            const { data: candidatesData, error: candidatesError } = await supabase
+                .from('candidatos')
+                .select('id, votos')
+            
+            if (votersError || candidatesError) {
+                console.error('Erro ao carregar estatísticas:', votersError || candidatesError)
+                return { error: 'Erro ao carregar estatísticas' }
+            }
+            
+            const totalVoters = votersData?.length || 0
+            const votedVoters = votersData?.filter(v => v.ja_votou)?.length || 0
+            const totalVotes = candidatesData?.reduce((sum, c) => sum + (c.votos || 0), 0) || 0
+            
+            return {
+                totalVoters,
+                votedVoters,
+                totalVotes,
+                participationRate: totalVoters > 0 ? Math.round((votedVoters / totalVoters) * 100) : 0
+            }
+        },
+
+        // Obter resultados da eleição
+        getElectionResults: async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('candidatos')
+                    .select('*')
+                    .order('votos', { ascending: false })
+                
+                return { data, error }
+            } catch (error) {
+                console.error('Erro ao obter resultados:', error)
+                return { error }
+            }
+        },
+
+        // Atualizar configuração da eleição
+        updateElectionConfig: async (configData) => {
+            try {
+                const { data, error } = await supabase
+                    .from('configuracoes_eleicao')
+                    .update(configData)
+                    .eq('id', configData.id)
+                
+                return { data, error }
+            } catch (error) {
+                console.error('Erro ao atualizar configuração:', error)
+                return { error }
+            }
+        }
+    };
+
+    const votingAPI = {
+        // Obter todos os candidatos
+        getCandidates: async () => {
+            const { data, error } = await supabase
+                .from('candidatos')
+                .select('*')
+                .order('numero')
+            
+            return { data, error }
+        }
+    };
+
     // Carregar dados iniciais
     async function loadInitialData() {
         try {
