@@ -239,3 +239,52 @@ export const adminAPI = {
     }
   }
 }
+// lib/supabase.js - Funções com melhor tratamento de erro
+
+export const adminAPI = {
+  // ... outras funções ...
+
+  addCandidate: async (candidateData) => {
+    console.log('Enviando dados para Supabase:', candidateData);
+    
+    const { data, error } = await supabase
+      .from('candidatos')
+      .insert([candidateData])
+      .select()
+    
+    console.log('Resposta do Supabase:', { data, error });
+    
+    if (error) {
+      console.error('Erro específico do Supabase:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+    }
+    
+    return { data, error }
+  },
+
+  generateRegistrationLink: async (linkData) => {
+    console.log('Enviando link para Supabase:', linkData);
+    
+    const { data, error } = await supabase
+      .from('links_registro')
+      .insert([linkData])
+      .select()
+    
+    console.log('Resposta do Supabase (link):', { data, error });
+    
+    if (error) {
+      console.error('Erro específico do Supabase (link):', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
+    }
+    
+    return { data, error }
+  }
+}
