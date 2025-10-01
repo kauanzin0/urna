@@ -4,8 +4,6 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = 'https://cmotgxmepisuobieybzz.supabase.co'
 const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNtb3RneG1lcGlzdW9iaWV5Ynp6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc3MzM4NDcsImV4cCI6MjA3MzMwOTg0N30.wYlO8N5flb_agcMipu_PVh4U4Qn2XNn_g2L0mT6FX4k'
 
-
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
 // Funções de autenticação
@@ -149,32 +147,48 @@ export const adminAPI = {
 
   // Adicionar novo eleitor
   addVoter: async (voterData) => {
-    try {
-      const { data, error } = await supabase
-        .from('eleitores')
-        .insert([voterData])
-        .select()
-      
-      return { data, error }
-    } catch (error) {
-      console.error('Erro ao adicionar eleitor:', error)
-      return { error }
+    console.log('Enviando dados do eleitor para Supabase:', voterData);
+    
+    const { data, error } = await supabase
+      .from('eleitores')
+      .insert([voterData])
+      .select()
+    
+    console.log('Resposta do Supabase (eleitor):', { data, error });
+    
+    if (error) {
+      console.error('Erro específico do Supabase (eleitor):', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
     }
+    
+    return { data, error }
   },
 
   // Adicionar novo candidato
   addCandidate: async (candidateData) => {
-    try {
-      const { data, error } = await supabase
-        .from('candidatos')
-        .insert([candidateData])
-        .select()
-      
-      return { data, error }
-    } catch (error) {
-      console.error('Erro ao adicionar candidato:', error)
-      return { error }
+    console.log('Enviando dados do candidato para Supabase:', candidateData);
+    
+    const { data, error } = await supabase
+      .from('candidatos')
+      .insert([candidateData])
+      .select()
+    
+    console.log('Resposta do Supabase (candidato):', { data, error });
+    
+    if (error) {
+      console.error('Erro específico do Supabase (candidato):', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      });
     }
+    
+    return { data, error }
   },
 
   // Obter configuração da eleição
@@ -211,63 +225,7 @@ export const adminAPI = {
 
   // Gerar novo link de registro
   generateRegistrationLink: async (linkData) => {
-    try {
-      const { data, error } = await supabase
-        .from('links_registro')
-        .insert([linkData])
-        .select()
-      
-      return { data, error }
-    } catch (error) {
-      console.error('Erro ao gerar link:', error)
-      return { error }
-    }
-  },
-
-  // Obter resultados da eleição
-  getElectionResults: async () => {
-    try {
-      const { data, error } = await supabase
-        .from('candidatos')
-        .select('*')
-        .order('votos', { ascending: false })
-      
-      return { data, error }
-    } catch (error) {
-      console.error('Erro ao obter resultados:', error)
-      return { error }
-    }
-  }
-}
-// lib/supabase.js - Funções com melhor tratamento de erro
-
-export const adminAPI = {
-  // ... outras funções ...
-
-  addCandidate: async (candidateData) => {
-    console.log('Enviando dados para Supabase:', candidateData);
-    
-    const { data, error } = await supabase
-      .from('candidatos')
-      .insert([candidateData])
-      .select()
-    
-    console.log('Resposta do Supabase:', { data, error });
-    
-    if (error) {
-      console.error('Erro específico do Supabase:', {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code
-      });
-    }
-    
-    return { data, error }
-  },
-
-  generateRegistrationLink: async (linkData) => {
-    console.log('Enviando link para Supabase:', linkData);
+    console.log('Enviando dados do link para Supabase:', linkData);
     
     const { data, error } = await supabase
       .from('links_registro')
@@ -286,5 +244,20 @@ export const adminAPI = {
     }
     
     return { data, error }
+  },
+
+  // Obter resultados da eleição
+  getElectionResults: async () => {
+    try {
+      const { data, error } = await supabase
+        .from('candidatos')
+        .select('*')
+        .order('votos', { ascending: false })
+      
+      return { data, error }
+    } catch (error) {
+      console.error('Erro ao obter resultados:', error)
+      return { error }
+    }
   }
 }

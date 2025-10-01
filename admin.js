@@ -1,4 +1,4 @@
-// scripts/admin.js
+/// scripts/admin.js
 document.addEventListener('DOMContentLoaded', function() {
     // Verificar se o administrador está logado
     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin'));
@@ -257,6 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const name = document.getElementById('newVoterName').value;
         const password = document.getElementById('newVoterPassword').value;
         
+        console.log('Tentando adicionar eleitor:', { id, name, password });
+        
         try {
             const voterData = {
                 numero_identificacao: id,
@@ -266,12 +268,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 ativo: true
             };
             
+            console.log('Dados do eleitor:', voterData);
+            
             const { data, error } = await adminAPI.addVoter(voterData);
             
             if (error) {
-                alert('Erro ao adicionar eleitor: ' + error.message);
+                console.error('ERRO DETALHADO ao adicionar eleitor:', error);
+                alert('Erro ao adicionar eleitor: ' + JSON.stringify(error));
                 return;
             }
+            
+            console.log('Eleitor adicionado com sucesso:', data);
             
             await updateStats();
             await renderVoterList();
@@ -281,102 +288,99 @@ document.addEventListener('DOMContentLoaded', function() {
             
             showSuccessMessage('Eleitor adicionado com sucesso!');
         } catch (error) {
-            alert('Erro ao adicionar eleitor');
-            console.error(error);
+            console.error('ERRO COMPLETO ao adicionar eleitor:', error);
+            alert('Erro completo: ' + error.message);
         }
     }
     
-    // scripts/admin.js - Substitua as funções problemáticas por estas versões com debug
-
-async function handleAddCandidate(e) {
-    e.preventDefault();
-    
-    const number = document.getElementById('candidateNumber').value;
-    const name = document.getElementById('candidateName').value;
-    const party = document.getElementById('candidateParty').value;
-    const photo = document.getElementById('candidatePhoto').value;
-    
-    console.log('Tentando adicionar candidato:', { number, name, party, photo });
-    
-    try {
-        const candidateData = {
-            numero: number,
-            nome: name,
-            partido: party,
-            foto_url: photo || null,
-            votos: 0
-        };
+    async function handleAddCandidate(e) {
+        e.preventDefault();
         
-        console.log('Dados do candidato:', candidateData);
+        const number = document.getElementById('candidateNumber').value;
+        const name = document.getElementById('candidateName').value;
+        const party = document.getElementById('candidateParty').value;
+        const photo = document.getElementById('candidatePhoto').value;
         
-        const { data, error } = await adminAPI.addCandidate(candidateData);
+        console.log('Tentando adicionar candidato:', { number, name, party, photo });
         
-        if (error) {
-            console.error('ERRO DETALHADO ao adicionar candidato:', error);
-            alert('Erro ao adicionar candidato: ' + JSON.stringify(error));
+        // Validação básica
+        if (!number || !name || !party) {
+            alert('Por favor, preencha todos os campos obrigatórios!');
             return;
         }
         
-        console.log('Candidato adicionado com sucesso:', data);
-        showSuccessMessage('Candidato adicionado com sucesso!');
-        
-        await renderCandidateManagementList();
-        candidateForm.reset();
-        candidateModal.style.display = 'none';
-        
-    } catch (error) {
-        console.error('ERRO COMPLETO ao adicionar candidato:', error);
-        alert('Erro completo: ' + error.message);
-    }
-}
-
-async function generateRegistrationLink() {
-    console.log('Tentando gerar link de registro...');
-    
-    try {
-        // Gerar código único
-        const code = Math.random().toString(36).substring(2, 10).toUpperCase();
-        console.log('Código gerado:', code);
-        
-        const linkData = {
-            codigo: code,
-            data_expiracao: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            max_usos: 100,
-            usos_atuais: 0,
-            ativo: true
-        };
-        
-        console.log('Dados do link:', linkData);
-        
-        const { data, error } = await adminAPI.generateRegistrationLink(linkData);
-        
-        if (error) {
-            console.error('ERRO DETALHADO ao gerar link:', error);
-            alert('Erro ao gerar link: ' + JSON.stringify(error));
-            return;
+        try {
+            const candidateData = {
+                numero: number,
+                nome: name,
+                partido: party,
+                foto_url: photo || null,
+                votos: 0
+            };
+            
+            console.log('Dados do candidato:', candidateData);
+            
+            const { data, error } = await adminAPI.addCandidate(candidateData);
+            
+            if (error) {
+                console.error('ERRO DETALHADO ao adicionar candidato:', error);
+                alert('Erro ao adicionar candidato: ' + JSON.stringify(error));
+                return;
+            }
+            
+            console.log('Candidato adicionado com sucesso:', data);
+            
+            await renderCandidateManagementList();
+            await renderResultsChart();
+            await updateStats();
+            
+            candidateForm.reset();
+            candidateModal.style.display = 'none';
+            
+            showSuccessMessage('Candidato adicionado com sucesso!');
+        } catch (error) {
+            console.error('ERRO COMPLETO ao adicionar candidato:', error);
+            alert('Erro completo: ' + error.message);
         }
-        
-        console.log('Link gerado com sucesso:', data);
-        
-        // Atualizar o link no modal
-        generatedLink.value = `${window.location.origin}/register.html?code=${code}`;
-        linkModal.style.display = 'flex';
-        
-        showSuccessMessage('Link gerado com sucesso!');
-        
-    } catch (error) {
-        console.error('ERRO COMPLETO ao gerar link:', error);
-        alert('Erro completo: ' + error.message);
     }
-}
+    
+    async function generateRegistrationLink() {
+        console.log('Tentando gerar link de registro...');
+        
+        try {
+            // Gerar código único
+            const code = Math.random().toString(36).substring(2, 10).toUpperCase();
+            console.log('Código gerado:', code);
+            
+            const linkData = {
+                codigo: code,
+                data_expiracao: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                max_usos: 100,
+                usos_atuais: 0,
+                ativo: true
+            };
+            
+            console.log('Dados do link:', linkData);
+            
+            const { data, error } = await adminAPI.generateRegistrationLink(linkData);
+            
+            if (error) {
+                console.error('ERRO DETALHADO ao gerar link:', error);
+                alert('Erro ao gerar link: ' + JSON.stringify(error));
+                return;
+            }
+            
+            console.log('Link gerado com sucesso:', data);
             
             // Atualizar o link no modal
             generatedLink.value = `${window.location.origin}/register.html?code=${code}`;
-            
             linkModal.style.display = 'flex';
+            
+            showSuccessMessage('Link gerado com sucesso!');
+            
         } catch (error) {
-            alert('Erro ao gerar link de registro');
-            console.error(error);
+            console.error('ERRO COMPLETO ao gerar link:', error);
+            alert('Erro completo: ' + error.message);
         }
     }
     
@@ -534,123 +538,3 @@ async function generateRegistrationLink() {
     // Carregar dados iniciais
     loadInitialData();
 });
-
-// scripts/admin.js - Funções corrigidas para adicionar eleitores e candidatos
-
-// ... código anterior ...
-
-async function handleAddVoter(e) {
-    e.preventDefault();
-    
-    const id = document.getElementById('newVoterId').value;
-    const name = document.getElementById('newVoterName').value;
-    const password = document.getElementById('newVoterPassword').value;
-    
-    try {
-        const voterData = {
-            numero_identificacao: id,
-            nome: name,
-            senha: password,
-            ja_votou: false,
-            ativo: true
-        };
-        
-        const { data, error } = await adminAPI.addVoter(voterData);
-        
-        if (error) {
-            alert('Erro ao adicionar eleitor: ' + error.message);
-            console.error('Detalhes do erro:', error);
-            return;
-        }
-        
-        await updateStats();
-        await renderVoterList();
-        
-        voterForm.reset();
-        voterModal.style.display = 'none';
-        
-        showSuccessMessage('Eleitor adicionado com sucesso!');
-    } catch (error) {
-        alert('Erro ao adicionar eleitor: ' + error.message);
-        console.error('Erro completo:', error);
-    }
-}
-
-async function handleAddCandidate(e) {
-    e.preventDefault();
-    
-    const number = document.getElementById('candidateNumber').value;
-    const name = document.getElementById('candidateName').value;
-    const party = document.getElementById('candidateParty').value;
-    const photo = document.getElementById('candidatePhoto').value;
-    
-    // Validação básica
-    if (!number || !name || !party) {
-        alert('Por favor, preencha todos os campos obrigatórios!');
-        return;
-    }
-    
-    try {
-        const candidateData = {
-            numero: number,
-            nome: name,
-            partido: party,
-            foto_url: photo || null,
-            votos: 0
-        };
-        
-        const { data, error } = await adminAPI.addCandidate(candidateData);
-        
-        if (error) {
-            alert('Erro ao adicionar candidato: ' + error.message);
-            console.error('Detalhes do erro:', error);
-            return;
-        }
-        
-        await renderCandidateManagementList();
-        await renderResultsChart();
-        await updateStats();
-        
-        candidateForm.reset();
-        candidateModal.style.display = 'none';
-        
-        showSuccessMessage('Candidato adicionado com sucesso!');
-    } catch (error) {
-        alert('Erro ao adicionar candidato: ' + error.message);
-        console.error('Erro completo:', error);
-    }
-}
-
-async function generateRegistrationLink() {
-    try {
-        // Gerar código único
-        const code = Math.random().toString(36).substring(2, 10).toUpperCase();
-        
-        const linkData = {
-            codigo: code,
-            criado_por: currentAdmin.id,
-            data_expiracao: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-            max_usos: 100,
-            usos_atuais: 0,
-            ativo: true
-        };
-        
-        const { data, error } = await adminAPI.generateRegistrationLink(linkData);
-        
-        if (error) {
-            alert('Erro ao gerar link: ' + error.message);
-            console.error('Detalhes do erro:', error);
-            return;
-        }
-        
-        // Atualizar o link no modal
-        generatedLink.value = `${window.location.origin}/register.html?code=${code}`;
-        
-        linkModal.style.display = 'flex';
-    } catch (error) {
-        alert('Erro ao gerar link de registro: ' + error.message);
-        console.error('Erro completo:', error);
-    }
-}
-
-// ... resto do código ...
