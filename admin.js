@@ -1,5 +1,7 @@
-// scripts/admin.js - Versão sem módulos ES6
+// scripts/admin.js
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Admin.js carregado - Supabase disponível:', !!window.supabase);
+    
     // Verificar se o administrador está logado
     const currentAdmin = JSON.parse(localStorage.getItem('currentAdmin'));
     if (!currentAdmin) {
@@ -44,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar interface
     adminNameElement.textContent = currentAdmin.name || 'Administrador';
     
-    // Funções do Supabase (copiadas do supabase.js)
+    // Funções do Supabase
     const adminAPI = {
         // Adicionar novo candidato
         addCandidate: async (candidateData) => {
@@ -133,6 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Obter configuração da eleição
         getElectionConfig: async () => {
             try {
+                console.log('Buscando configuração da eleição...');
                 const { data, error } = await supabase
                     .from('configuracoes_eleicao')
                     .select('*')
@@ -140,6 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     .limit(1)
                     .single()
                 
+                console.log('Configuração da eleição:', { data, error });
                 return { data, error }
             } catch (error) {
                 console.error('Erro ao obter configuração:', error)
@@ -220,11 +224,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Carregar dados iniciais
     async function loadInitialData() {
         try {
+            console.log('Carregando dados iniciais...');
             await updateStats();
             await renderVoterList();
             await renderCandidateManagementList();
             await renderResultsChart();
             await loadElectionConfig();
+            console.log('Dados iniciais carregados com sucesso!');
         } catch (error) {
             console.error('Erro ao carregar dados:', error);
         }
@@ -264,17 +270,47 @@ document.addEventListener('DOMContentLoaded', function() {
     // Funções
     async function loadElectionConfig() {
         try {
+            console.log('Carregando configuração da eleição...');
             const { data, error } = await adminAPI.getElectionConfig();
             
             if (error) {
                 console.error('Erro ao carregar configuração:', error);
+                // Criar configuração padrão se não existir
+                await createDefaultElectionConfig();
                 return;
             }
             
             electionConfig = data;
             updateVotingControls();
+            console.log('Configuração carregada:', electionConfig);
         } catch (error) {
             console.error('Erro ao carregar configuração:', error);
+        }
+    }
+
+    async function createDefaultElectionConfig() {
+        try {
+            console.log('Criando configuração padrão...');
+            const { data, error } = await supabase
+                .from('configuracoes_eleicao')
+                .insert([{
+                    titulo_eleicao: 'Eleição 2023',
+                    descricao: 'Processo eleitoral para representantes de turma',
+                    status: 'nao_iniciada'
+                }])
+                .select()
+                .single();
+            
+            if (error) {
+                console.error('Erro ao criar configuração padrão:', error);
+                return;
+            }
+            
+            electionConfig = data;
+            updateVotingControls();
+            console.log('Configuração padrão criada:', electionConfig);
+        } catch (error) {
+            console.error('Erro ao criar configuração padrão:', error);
         }
     }
     
